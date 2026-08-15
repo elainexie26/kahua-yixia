@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-import sys
 from pathlib import Path
 
 import yaml
@@ -10,7 +9,6 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_DIR = ROOT / "kahua-yixia"
 SKILL_FILE = SKILL_DIR / "SKILL.md"
-AGENT_FILE = SKILL_DIR / "agents" / "openai.yaml"
 PRESETS_FILE = SKILL_DIR / "references" / "style-presets.md"
 
 
@@ -30,29 +28,34 @@ if not match:
     fail("SKILL.md must start with YAML frontmatter")
 
 frontmatter = yaml.safe_load(match.group(1))
-if set(frontmatter) != {"name", "description"}:
+if not isinstance(frontmatter, dict) or set(frontmatter) != {"name", "description"}:
     fail("SKILL.md frontmatter must contain only name and description")
 if frontmatter["name"] != SKILL_DIR.name:
     fail("skill name must match its directory")
 if not re.fullmatch(r"[a-z0-9-]{1,63}", frontmatter["name"]):
     fail("skill name must use lowercase letters, digits, and hyphens")
-
-agent = yaml.safe_load(read_utf8(AGENT_FILE))
-interface = agent.get("interface", {})
-required_interface = {"display_name", "short_description", "default_prompt"}
-if not required_interface.issubset(interface):
-    fail("agents/openai.yaml is missing required interface fields")
-if "$kahua-yixia" not in interface["default_prompt"]:
-    fail("default_prompt must explicitly mention $kahua-yixia")
-if not 25 <= len(interface["short_description"]) <= 64:
-    fail("short_description must be 25-64 characters")
+if not isinstance(frontmatter["description"], str) or not frontmatter["description"].strip():
+    fail("description must be a non-empty string")
 
 presets_text = read_utf8(PRESETS_FILE)
-for label in ("现代平面插画风", "可爱动画风"):
+for label in ("现代平面插画", "可爱轻卡通"):
     if label not in skill_text or label not in presets_text:
-        fail(f"missing official style name: {label}")
+        fail(f"missing consistent style name: {label}")
 
 if "references/style-presets.md" not in skill_text:
-    fail("SKILL.md must link to the style presets")
+    fail("SKILL.md must link to the bundled style presets")
 
-print("Repository validation passed.")
+for platform_term in ("Codex", "OpenAI", "image_gen", "view_image"):
+    if platform_term in skill_text or platform_term in presets_text:
+        fail(f"platform-specific term is not allowed in the release skill: {platform_term}")
+
+files = sorted(
+    path.relative_to(SKILL_DIR).as_posix()
+    for path in SKILL_DIR.rglob("*")
+    if path.is_file()
+)
+expected_files = ["SKILL.md", "references/style-presets.md"]
+if files != expected_files:
+    fail(f"release package must contain only {expected_files}; found {files}")
+
+print("Skill validation passed.")

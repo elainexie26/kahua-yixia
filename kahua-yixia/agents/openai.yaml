@@ -1,4 +1,0 @@
-interface:
-  display_name: "咔画一下"
-  short_description: "把普通照片快速变成适合社交分享的现代平面插画风或可爱动画风图片"
-  default_prompt: "Use $kahua-yixia to turn this photo into a modern flat illustration or cute animation image."

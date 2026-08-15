@@ -1,60 +1,29 @@
 # 咔画一下
 
-一个面向 Codex 的照片风格化 Skill，可将单张 JPG、PNG 或 WEBP 照片转换为以下两种视觉风格：
+“咔画一下”是一个平台中立的照片风格化 Skill：将用户有权使用的一张 JPG、PNG 或 WEBP 照片转换为现代平面插画或可爱轻卡通静态图。
 
-- **现代平面插画风**（`illustration`）
-- **可爱动画风**（`cute`）
+## 发布内容
 
-转换过程优先保留主体身份、数量、姿态、构图和场景语义，并支持弱、中、强三档风格强度。
-
-## 安装
-
-将 [`kahua-yixia`](./kahua-yixia) 目录复制到 Codex 的 Skills 目录，然后重新启动或刷新 Codex。
-
-Windows 默认位置：
-
-```text
-%USERPROFILE%\.codex\skills\kahua-yixia
-```
-
-macOS / Linux 默认位置：
-
-```text
-~/.codex/skills/kahua-yixia
-```
-
-## 使用
-
-在 Codex 中附上一张照片并调用：
-
-```text
-Use $kahua-yixia to turn this photo into a modern flat illustration.
-```
-
-也可以直接用中文描述，例如：
-
-```text
-请用咔画一下，把这张照片转成可爱动画风，中等强度。
-```
-
-## 项目结构
+提交审核时仅打包 `kahua-yixia` 目录。发布包包含：
 
 ```text
 kahua-yixia/
 ├── SKILL.md
-├── agents/
-│   └── openai.yaml
 └── references/
     └── style-presets.md
 ```
 
-## 质量与安全
+Skill 不包含可执行代码、密钥、账号操作或自动发布功能。它只在宿主已经提供图片查看与编辑能力、能够披露实际服务方及数据规则，并取得用户确认后执行。
 
-- 遵循 Codex Skill 的标准目录和 YAML 元数据格式。
-- 通过 GitHub Actions 自动检查元数据、目录名称、UI 配置和风格预设。
-- 不模仿特定在世艺术家、动画 IP、影视作品或品牌官方视觉。
-- 不在仓库中保存或上传用户原始照片。
-- 默认每次只处理和生成一张图片。
+## 自检
+
+运行：
+
+```text
+python scripts/validate_skill.py
+```
+
+自检会检查元数据、文件结构、风格名称、引用文件，以及发布内容中是否残留平台专属工具名称。
 
 ## 许可证
 
