@@ -1,0 +1,25 @@
+# Operating-system and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Temporary and generated files
+*.log
+*.tmp
+tmp/
+dist/
+build/
+
+# User photos and generated images must not be committed
+uploads/
+outputs/
+generated/
+
+# Internal product documentation (kept local)
+《照片 Skill V1 PRD｜推荐名：咔画一下》.md
